@@ -1,0 +1,63 @@
+.vendor-card {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.vendor-card-header {
+    padding: 28px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.vendor-card-emoji {
+    font-size: 2.2rem;
+}
+
+.vendor-card-shop {
+    font-size: 1.15rem;
+    margin-bottom: 4px;
+}
+
+.vendor-card-name {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+
+.vendor-card-desc {
+    font-size: 0.87rem;
+    color: var(--text-secondary);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+
+.vendor-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-light);
+}
+
+.vendor-card-products {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.vendor-card-view {
+    font-size: 0.82rem;
+    font-weight: 550;
+    color: var(--green-700);
+}
