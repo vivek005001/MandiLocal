@@ -1,0 +1,143 @@
+.tankri-keyboard-container {
+  background: white;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.tankri-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 16px;
+  font-size: 2rem; /* Large font for script readability */
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-md);
+  margin-bottom: 24px;
+  resize: vertical;
+  color: var(--text-primary);
+  background: var(--off-white);
+  transition: all var(--transition-fast);
+  font-family: sans-serif; /* Fallback, should display unicode if available */
+}
+
+.tankri-textarea:focus {
+  outline: none;
+  border-color: var(--green-500);
+  box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.12);
+}
+
+.keyboard-section {
+  margin-bottom: 24px;
+}
+
+.keyboard-section-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 6px;
+}
+
+.keyboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: 8px;
+}
+
+.keyboard-grid.dependent-vowels {
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+}
+
+.keyboard-key {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 8px;
+  background: var(--warm-white);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.keyboard-key:hover {
+  background: var(--green-50);
+  border-color: var(--green-400);
+  transform: translateY(-1px);
+}
+
+.keyboard-key:active {
+  background: var(--green-100);
+  transform: translateY(1px);
+}
+
+.key-char {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  line-height: 1;
+}
+
+.key-dependent {
+  /* Give dependent vowels a dotted circle context for clarity */
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  line-height: 1;
+}
+
+.key-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.keyboard-controls {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-light);
+}
+
+.key-control {
+  flex: 1;
+}
+
+.key-space {
+  flex: 2;
+}
+
+@media (max-width: 640px) {
+  .keyboard-grid {
+    grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+    gap: 6px;
+  }
+  
+  .keyboard-key {
+    padding: 8px 4px;
+  }
+  
+  .key-char {
+    font-size: 1.25rem;
+  }
+  
+  .key-label {
+    font-size: 0.6rem;
+  }
+  
+  .keyboard-controls {
+    flex-wrap: wrap;
+  }
+  
+  .key-control {
+    flex: 1 1 100%;
+  }
+}

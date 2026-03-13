@@ -10,6 +10,7 @@ import VendorProfile from './pages/VendorProfile';
 import Blogs from './pages/Blogs';
 import BlogPost from './pages/BlogPost';
 import About from './pages/About';
+import Tankri from './pages/Tankri';
 import './App.css';
 
 function ScrollToTop() {
@@ -34,6 +35,7 @@ function App() {
             <Route path="/vendor/:id" element={<VendorProfile />} />
             <Route path="/blogs" element={<Blogs />} />
             <Route path="/blog/:id" element={<BlogPost />} />
+            <Route path="/tankri" element={<Tankri />} />
             <Route path="/about" element={<About />} />
           </Routes>
         </main>

@@ -22,6 +22,7 @@ export default function Navbar() {
     { to: '/', label: 'Home' },
     { to: '/catalog', label: 'Catalog' },
     { to: '/blogs', label: 'Blog' },
+    { to: '/tankri', label: 'Tankri' },
     { to: '/about', label: 'About' },
   ];
 
