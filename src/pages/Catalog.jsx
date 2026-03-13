@@ -11,8 +11,37 @@ export default function Catalog() {
 
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem('vendors') || '[]');
-    setVendors([...SEED_VENDORS, ...stored]);
+    const deletedSeedIds = JSON.parse(localStorage.getItem('deletedSeedVendors') || '[]');
+    
+    // Filter out seed vendors that were deleted
+    const activeSeedVendors = SEED_VENDORS.filter(v => !deletedSeedIds.includes(v.id));
+    
+    setVendors([...activeSeedVendors, ...stored]);
   }, []);
+
+  const handleDelete = (e, id) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!window.confirm('Are you sure you want to delete this vendor?')) return;
+
+    // Check if it's a seed vendor
+    if (id.toString().startsWith('v_seed_')) {
+      const deletedSeedIds = JSON.parse(localStorage.getItem('deletedSeedVendors') || '[]');
+      if (!deletedSeedIds.includes(id)) {
+        deletedSeedIds.push(id);
+        localStorage.setItem('deletedSeedVendors', JSON.stringify(deletedSeedIds));
+      }
+    } else {
+      // It's a user-added vendor
+      const stored = JSON.parse(localStorage.getItem('vendors') || '[]');
+      const updatedStored = stored.filter(v => v.id !== id);
+      localStorage.setItem('vendors', JSON.stringify(updatedStored));
+    }
+    
+    // Update local state
+    setVendors(prev => prev.filter(v => v.id !== id));
+  };
 
   const filtered = vendors.filter((v) => {
     const matchesSearch =
@@ -64,7 +93,7 @@ export default function Catalog() {
         {filtered.length > 0 ? (
           <div className="grid grid-3">
             {filtered.map((vendor) => (
-              <VendorCard key={vendor.id} vendor={vendor} />
+              <VendorCard key={vendor.id} vendor={vendor} onDelete={(e) => handleDelete(e, vendor.id)} />
             ))}
           </div>
         ) : (

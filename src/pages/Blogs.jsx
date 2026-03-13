@@ -20,8 +20,38 @@ export default function Blogs() {
 
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem('blogs') || '[]');
-    setBlogs([...SEED_BLOGS, ...stored]);
+    const deletedSeedIds = JSON.parse(localStorage.getItem('deletedSeedBlogs') || '[]');
+    
+    // Filter out seed blogs that were deleted
+    const activeSeedBlogs = SEED_BLOGS.filter(b => !deletedSeedIds.includes(b.id));
+    
+    setBlogs([...activeSeedBlogs, ...stored]);
   }, []);
+
+  const handleDelete = (e, id) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!window.confirm('Are you sure you want to delete this blog post?')) return;
+
+    // Check if it's a seed blog
+    if (id.toString().startsWith('b_seed_')) {
+      const deletedSeedIds = JSON.parse(localStorage.getItem('deletedSeedBlogs') || '[]');
+      if (!deletedSeedIds.includes(id)) {
+        deletedSeedIds.push(id);
+        localStorage.setItem('deletedSeedBlogs', JSON.stringify(deletedSeedIds));
+      }
+    } else {
+      // It's a user-added blog
+      const stored = JSON.parse(localStorage.getItem('blogs') || '[]');
+      const updatedStored = stored.filter(b => b.id !== id);
+      localStorage.setItem('blogs', JSON.stringify(updatedStored));
+    }
+    
+    // Update local state
+    setBlogs(prev => prev.filter(b => b.id !== id));
+    showToast('Blog post deleted successfully');
+  };
 
   const filtered = blogs.filter(
     (b) =>
@@ -59,7 +89,11 @@ export default function Blogs() {
     stored.unshift(newBlog);
     localStorage.setItem('blogs', JSON.stringify(stored));
 
-    setBlogs([...SEED_BLOGS, ...stored]);
+    // Calculate what the active seed blogs are at this point, if we want to redraw properly
+    const deletedSeedIds = JSON.parse(localStorage.getItem('deletedSeedBlogs') || '[]');
+    const activeSeedBlogs = SEED_BLOGS.filter(cb => !deletedSeedIds.includes(cb.id));
+
+    setBlogs([...activeSeedBlogs, ...stored]);
     setForm({ title: '', author: '', category: 'Culture', content: '' });
     setShowForm(false);
     showToast('Blog post published successfully!');
@@ -150,7 +184,7 @@ export default function Blogs() {
         {filtered.length > 0 ? (
           <div className="grid grid-3">
             {filtered.map((blog) => (
-              <BlogCard key={blog.id} blog={blog} />
+              <BlogCard key={blog.id} blog={blog} onDelete={(e) => handleDelete(e, blog.id)} />
             ))}
           </div>
         ) : (

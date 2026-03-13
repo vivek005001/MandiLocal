@@ -9,7 +9,7 @@ export default function About() {
         <div className="about-hero">
           <div className="about-badge">
             <Mountain size={15} />
-            The Varanasi of Hills
+            The Choti Kashi
           </div>
           <h1>About Mandi</h1>
           <p className="about-lead">
@@ -31,7 +31,7 @@ export default function About() {
             <Landmark size={28} className="about-card-icon" />
             <h3>Heritage</h3>
             <p>
-              With 81+ ancient stone temples, Mandi earned the title "Varanasi of Hills."
+              With 81+ ancient stone temples, Mandi earned the title "Choti Kashi."
               The annual International Shivaratri Fair draws hundreds of deities
               and thousands of visitors from across India.
             </p>
@@ -57,7 +57,7 @@ export default function About() {
         <div className="about-mission">
           <h2>Our Mission</h2>
           <p>
-            <strong>MandiLocal</strong> was created to give Mandi's local vendors a digital presence.
+            <strong>Mera Himachal</strong> was created to give Mandi's local vendors a digital presence.
             Too many amazing artisans, cooks, and craftspeople remain invisible because they don't have
             access to e-commerce platforms or marketing tools.
           </p>

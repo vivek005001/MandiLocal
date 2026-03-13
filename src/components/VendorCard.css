@@ -61,3 +61,36 @@
     font-weight: 550;
     color: var(--green-700);
 }
+.vendor-card {
+  position: relative;
+}
+
+.delete-button-overlay {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--border-light);
+  color: var(--accent-rust);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+  z-index: 10;
+}
+
+.vendor-card:hover .delete-button-overlay {
+  opacity: 1;
+}
+
+.delete-button-overlay:hover {
+  background: var(--accent-rust);
+  color: white;
+  border-color: var(--accent-rust);
+  transform: scale(1.05); /* slightly enlarge on hover */
+}

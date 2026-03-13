@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { MapPin, Tag } from 'lucide-react';
+import { MapPin, Tag, Trash2 } from 'lucide-react';
 import './VendorCard.css';
 
 const CATEGORY_COLORS = {
@@ -24,7 +24,7 @@ const CATEGORY_EMOJIS = {
   'Other': '📦',
 };
 
-export default function VendorCard({ vendor }) {
+export default function VendorCard({ vendor, onDelete }) {
   const emoji = CATEGORY_EMOJIS[vendor.category] || '📦';
   const color = CATEGORY_COLORS[vendor.category] || '#8a7e6c';
 
@@ -41,6 +41,18 @@ export default function VendorCard({ vendor }) {
           {vendor.name} · Mandi, HP
         </p>
         <p className="vendor-card-desc">{vendor.description}</p>
+        
+        {onDelete && (
+          <button 
+            className="delete-button-overlay" 
+            onClick={onDelete}
+            title="Delete vendor"
+            aria-label="Delete vendor"
+          >
+            <Trash2 size={16} />
+          </button>
+        )}
+        
         <div className="vendor-card-footer">
           <span className="vendor-card-products">
             <Tag size={14} />

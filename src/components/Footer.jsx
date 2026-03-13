@@ -10,7 +10,7 @@ export default function Footer() {
           <div className="footer-brand">
             <Link to="/" className="footer-logo">
               <Mountain size={22} />
-              <span>Mandi<span className="footer-logo-accent">Local</span></span>
+              <span>Mera Himachal <span className="footer-logo-accent">- Mandi</span></span>
             </Link>
             <p className="footer-desc">
               Connecting you to the authentic culture, crafts, and flavors of Mandi, Himachal Pradesh.
@@ -35,7 +35,7 @@ export default function Footer() {
           <p>
             Made with <Heart size={14} className="footer-heart" /> in Mandi, Himachal Pradesh
           </p>
-          <p className="footer-copy">© 2026 MandiLocal. For the community, by the community.</p>
+          <p className="footer-copy">© 2026 Mera Himachal. For the community, by the community.</p>
         </div>
       </div>
     </footer>

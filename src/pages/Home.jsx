@@ -34,7 +34,7 @@ export default function Home() {
           </h1>
           <p className="hero-subtitle fade-in-up fade-in-up-delay-2">
             Your gateway to authentic local culture, handcrafted goods, and stories
-            from the Varanasi of Hills. Support local artisans and vendors directly.
+            from the Choti Kashi. Support local artisans and vendors directly.
           </p>
           <div className="hero-actions fade-in-up fade-in-up-delay-3">
             <Link to="/catalog" className="btn btn-primary btn-lg">

@@ -22,7 +22,7 @@ export default function VendorProfile() {
     );
   }
 
-  const whatsappLink = `https://wa.me/${vendor.whatsapp}?text=${encodeURIComponent(`Hi ${vendor.name}, I found your shop "${vendor.shopName}" on MandiLocal and I'm interested in your products!`)}`;
+  const whatsappLink = `https://wa.me/${vendor.whatsapp}?text=${encodeURIComponent(`Hi ${vendor.name}, I found your shop "${vendor.shopName}" on Mera Himachal and I'm interested in your products!`)}`;
 
   return (
     <div className="profile-page">

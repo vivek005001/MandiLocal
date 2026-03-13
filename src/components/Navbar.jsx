@@ -32,7 +32,7 @@ export default function Navbar() {
         <Link to="/" className="navbar-logo">
           <Mountain size={26} strokeWidth={2.2} />
           <span className="navbar-logo-text">
-            Mandi<span className="navbar-logo-accent">Local</span>
+            Mera Himachal <span className="navbar-logo-accent">- Mandi</span>
           </span>
         </Link>
 

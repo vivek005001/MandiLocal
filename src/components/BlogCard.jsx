@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Calendar, User, ArrowRight } from 'lucide-react';
+import { Calendar, User, ArrowRight, Trash2 } from 'lucide-react';
 import './BlogCard.css';
 
 const CATEGORY_COLORS = {
@@ -9,7 +9,7 @@ const CATEGORY_COLORS = {
   Artisans: '#6f4e37',
 };
 
-export default function BlogCard({ blog }) {
+export default function BlogCard({ blog, onDelete }) {
   const color = CATEGORY_COLORS[blog.category] || '#4a7c59';
 
   return (
@@ -20,6 +20,18 @@ export default function BlogCard({ blog }) {
       <div className="card-body">
         <h3 className="blog-card-title">{blog.title}</h3>
         <p className="blog-card-excerpt">{blog.excerpt}</p>
+        
+        {onDelete && (
+          <button 
+            className="delete-button-overlay" 
+            onClick={onDelete}
+            title="Delete post"
+            aria-label="Delete post"
+          >
+            <Trash2 size={16} />
+          </button>
+        )}
+        
         <div className="blog-card-meta">
           <span className="blog-card-author">
             <User size={13} />

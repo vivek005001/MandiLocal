@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Calendar, User, MessageSquare, Send, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Calendar, User, MessageSquare, Send, AlertTriangle, Trash2 } from 'lucide-react';
 import { SEED_BLOGS } from '../data/seedData';
 import { filterText, containsProfanity } from '../components/CussFilter';
 import './BlogPost.css';
@@ -59,6 +59,30 @@ export default function BlogPost() {
     setCommentText('');
     setCommentAuthor('');
     showToast('Comment added!');
+  };
+
+  const deleteComment = (commentId) => {
+    if (!window.confirm('Are you sure you want to delete this comment?')) return;
+
+    const updatedComments = blog.comments.filter(c => c.id !== commentId);
+    const updatedBlog = { ...blog, comments: updatedComments };
+
+    // Update in localStorage
+    const stored = JSON.parse(localStorage.getItem('blogs') || '[]');
+    const storedIndex = stored.findIndex((b) => b.id === id);
+    
+    if (storedIndex !== -1) {
+      stored[storedIndex] = updatedBlog;
+      localStorage.setItem('blogs', JSON.stringify(stored));
+    } else {
+      // It's a seed blog — remove from seed comments
+      const seedComments = JSON.parse(localStorage.getItem('seedBlogComments') || '{}');
+      seedComments[id] = updatedComments;
+      localStorage.setItem('seedBlogComments', JSON.stringify(seedComments));
+    }
+
+    setBlog(updatedBlog);
+    showToast('Comment deleted successfully');
   };
 
   // On load, merge seed blog comments from localStorage
@@ -137,6 +161,14 @@ export default function BlogPost() {
                     <span className="comment-author">{comment.author}</span>
                     <span className="comment-date">
                       {new Date(comment.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                      <button 
+                        className="comment-delete-btn" 
+                        onClick={() => deleteComment(comment.id)}
+                        title="Delete comment"
+                        aria-label="Delete comment"
+                      >
+                        <Trash2 size={13} />
+                      </button>
                     </span>
                   </div>
                   <p className="comment-text">{comment.text}</p>

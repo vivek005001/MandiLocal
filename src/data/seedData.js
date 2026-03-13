@@ -166,8 +166,8 @@ The best way to experience Mandi's food is through the local dhabas near Indira 
     date: '2026-02-10',
     category: 'Heritage',
     excerpt:
-      'Known as the "Varanasi of Hills", Mandi has over 81 ancient temples. But how many will survive the next century?',
-    content: `Mandi is often called the "Varanasi of Hills" — and for good reason. The town is home to over 81 ancient temples, many dating back to the medieval period. These architectural marvels, built in the Nagara and Shikhara styles, reflect centuries of devotion and craftsmanship.
+      'Known as the "Choti Kashi", Mandi has over 81 ancient temples. But how many will survive the next century?',
+    content: `Mandi is often called the "Choti Kashi" — and for good reason. The town is home to over 81 ancient temples, many dating back to the medieval period. These architectural marvels, built in the Nagara and Shikhara styles, reflect centuries of devotion and craftsmanship.
 
 ## The Iconic Temples
 
