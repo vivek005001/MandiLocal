@@ -6,11 +6,81 @@
   box-shadow: var(--shadow-sm);
 }
 
+/* ===== Mode Toggle Bar ===== */
+.keyboard-mode-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background: var(--green-50);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--green-200);
+  flex-wrap: wrap;
+}
+
+.keyboard-mode-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.keyboard-mode-toggle input {
+  display: none;
+}
+
+.toggle-slider {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background: var(--border-medium);
+  border-radius: 100px;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.toggle-slider::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background: white;
+  border-radius: 50%;
+  transition: all var(--transition-fast);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.keyboard-mode-toggle input:checked+.toggle-slider {
+  background: var(--green-600);
+}
+
+.keyboard-mode-toggle input:checked+.toggle-slider::after {
+  left: 23px;
+}
+
+.toggle-label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--green-800);
+}
+
+.mode-hint {
+  font-size: 0.8rem;
+  color: var(--green-600);
+  font-style: italic;
+}
+
+/* ===== Textarea ===== */
 .tankri-textarea {
   width: 100%;
   min-height: 120px;
   padding: 16px;
-  font-size: 2rem; /* Large font for script readability */
+  font-size: 2rem;
   border: 1.5px solid var(--border-light);
   border-radius: var(--radius-md);
   margin-bottom: 24px;
@@ -18,7 +88,7 @@
   color: var(--text-primary);
   background: var(--off-white);
   transition: all var(--transition-fast);
-  font-family: sans-serif; /* Fallback, should display unicode if available */
+  font-family: sans-serif;
 }
 
 .tankri-textarea:focus {
@@ -27,6 +97,7 @@
   box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.12);
 }
 
+/* ===== Keyboard Grid ===== */
 .keyboard-section {
   margin-bottom: 24px;
 }
@@ -52,6 +123,7 @@
   grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
 }
 
+/* ===== Keyboard Keys ===== */
 .keyboard-key {
   display: flex;
   flex-direction: column;
@@ -64,6 +136,7 @@
   cursor: pointer;
   transition: all var(--transition-fast);
   user-select: none;
+  position: relative;
 }
 
 .keyboard-key:hover {
@@ -77,6 +150,14 @@
   transform: translateY(1px);
 }
 
+/* Active key highlight (physical keyboard feedback) */
+.keyboard-key.key-active {
+  background: var(--green-200);
+  border-color: var(--green-600);
+  box-shadow: 0 0 0 2px var(--green-400), 0 0 12px rgba(74, 124, 89, 0.3);
+  transform: scale(1.08);
+}
+
 .key-char {
   font-size: 1.5rem;
   font-weight: 500;
@@ -86,7 +167,6 @@
 }
 
 .key-dependent {
-  /* Give dependent vowels a dotted circle context for clarity */
   font-size: 1.5rem;
   font-weight: 500;
   color: var(--text-primary);
@@ -99,6 +179,22 @@
   color: var(--text-muted);
 }
 
+/* Physical key shortcut badge on keys */
+.key-shortcut {
+  position: absolute;
+  top: 3px;
+  right: 4px;
+  font-size: 0.55rem;
+  font-weight: 600;
+  color: var(--green-700);
+  background: var(--green-100);
+  padding: 1px 4px;
+  border-radius: 3px;
+  opacity: 0.7;
+  text-transform: uppercase;
+}
+
+/* ===== Controls ===== */
 .keyboard-controls {
   display: flex;
   gap: 12px;
@@ -115,29 +211,141 @@
   flex: 2;
 }
 
+/* ===== Key Map Reference Panel ===== */
+.keymap-reference {
+  margin-top: 20px;
+  border-top: 1px solid var(--border-light);
+  padding-top: 16px;
+}
+
+.keymap-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  background: var(--off-white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.keymap-toggle:hover {
+  background: var(--green-50);
+  border-color: var(--green-300);
+  color: var(--green-800);
+}
+
+.keymap-content {
+  margin-top: 16px;
+  display: grid;
+  gap: 20px;
+}
+
+.keymap-group h4 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--green-800);
+  margin-bottom: 10px;
+  padding-bottom: 4px;
+  border-bottom: 1px dashed var(--border-light);
+}
+
+.keymap-table {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.keymap-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--warm-white);
+}
+
+.keymap-row:nth-child(even) {
+  background: var(--off-white);
+}
+
+.keymap-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  padding: 2px 8px;
+  background: white;
+  border: 1px solid var(--border-medium);
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--text-primary);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  font-family: 'Inter', monospace;
+}
+
+.keymap-arrow {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.keymap-value {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.keymap-divider {
+  color: var(--border-medium);
+  margin: 0 4px;
+}
+
+/* ===== Responsive ===== */
 @media (max-width: 640px) {
   .keyboard-grid {
     grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
     gap: 6px;
   }
-  
+
   .keyboard-key {
     padding: 8px 4px;
   }
-  
+
   .key-char {
     font-size: 1.25rem;
   }
-  
+
   .key-label {
     font-size: 0.6rem;
   }
-  
+
+  .key-shortcut {
+    display: none;
+  }
+
   .keyboard-controls {
     flex-wrap: wrap;
   }
-  
+
   .key-control {
     flex: 1 1 100%;
+  }
+
+  .keyboard-mode-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .keymap-row {
+    flex-wrap: wrap;
+    gap: 4px;
   }
 }

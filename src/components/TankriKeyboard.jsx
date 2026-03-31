@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react';
-import { Delete, KeyRound, Copy, CheckCheck } from 'lucide-react';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { Delete, Copy, CheckCheck, ChevronDown, ChevronUp } from 'lucide-react';
 import './TankriKeyboard.css';
 
 // Unicode reference:
@@ -25,12 +25,6 @@ const TANKRI_CHARS = {
     { char: '𑚇', label: 'ai' },
     { char: '𑚈', label: 'o' },
     { char: '𑚉', label: 'au' },
-    // others
-    { char: '𑚆', label: 'ĕ' },
-    { char: '𑚈', label: 'ŏ' },
-    { char: '𑚆', label: 'æ' },
-    { char: '𑚆', label: 'ǣ' },
-    { char: '𑚁', label: 'ô' },
   ],
   combiningSigns: [
     { char: '𑚭', label: 'ā' },    { char: '𑚮', label: 'i' },      { char: '𑚯', label: 'ī' },
@@ -68,12 +62,135 @@ const TANKRI_CHARS = {
   ]
 };
 
+// Phonetic map: physical key -> Tankri character
+// Normal keys map to basic consonants/vowels
+// Shift + key maps to aspirated or alternate forms
+const PHYSICAL_KEY_MAP = {
+  // Vowels (lowercase)
+  'a': '𑚀',   // a
+  'A': '𑚁',   // ā (Shift+a)
+  'i': '𑚂',   // i
+  'I': '𑚃',   // ī (Shift+i)
+  'u': '𑚄',   // u
+  'U': '𑚅',   // ū (Shift+u)
+  'e': '𑚆',   // e
+  'E': '𑚇',   // ai (Shift+e)
+  'o': '𑚈',   // o
+  'O': '𑚉',   // au (Shift+o)
+
+  // Consonants (lowercase = basic, uppercase = aspirated)
+  'k': '𑚊',   // ka
+  'K': '𑚸',   // kha (Shift+k)
+  'g': '𑚌',   // ga
+  'G': '𑚍',   // gha (Shift+g)
+
+  'c': '𑚏',   // ca
+  'C': '𑚐',   // cha (Shift+c)
+  'j': '𑚑',   // ja
+  'J': '𑚒',   // jha (Shift+j)
+
+  't': '𑚙',   // ta
+  'T': '𑚔',   // ṭa (Shift+t = retroflex)
+  'd': '𑚛',   // da
+  'D': '𑚖',   // ḍa (Shift+d = retroflex)
+
+  'p': '𑚞',   // pa
+  'P': '𑚟',   // pha (Shift+p)
+  'b': '𑚠',   // ba
+  'B': '𑚡',   // bha (Shift+b)
+
+  'n': '𑚝',   // na
+  'N': '𑚘',   // ṇa (Shift+n = retroflex)
+  'm': '𑚢',   // ma
+  'M': '𑚫',   // anusvara (Shift+m)
+
+  'y': '𑚣',   // ya
+  'r': '𑚤',   // ra
+  'l': '𑚥',   // la
+  'v': '𑚦',   // va
+  'w': '𑚦',   // va (alias)
+
+  's': '𑚨',   // sa
+  'S': '𑚧',   // śa (Shift+s)
+  'h': '𑚩',   // ha
+  'H': '𑚬',   // visarga (Shift+h)
+
+  'f': '𑚟',   // pha (common IME alias)
+  'x': '𑚋',   // ṣa
+  'q': '𑚎',   // ṅa
+
+  // Digits: use number keys for Tankri digits
+  '0': '𑛀', '1': '𑛁', '2': '𑛂', '3': '𑛃', '4': '𑛄',
+  '5': '𑛅', '6': '𑛆', '7': '𑛇', '8': '𑛈', '9': '𑛉',
+
+  // Special
+  '.': '।',    // danda for period
+  '>': '॥',    // double danda for Shift+period
+  'z': '𑚶',   // virama (halant)
+};
+
+// Reverse map: Tankri char -> physical key(s), for highlight feedback
+const REVERSE_KEY_MAP = {};
+Object.entries(PHYSICAL_KEY_MAP).forEach(([key, char]) => {
+  if (!REVERSE_KEY_MAP[char]) REVERSE_KEY_MAP[char] = [];
+  REVERSE_KEY_MAP[char].push(key);
+});
+
+// Key map reference data grouped for display
+const KEY_MAP_GROUPS = [
+  {
+    title: 'Vowels',
+    keys: [
+      { key: 'a', shift: 'A', normal: '𑚀 (a)', shifted: '𑚁 (ā)' },
+      { key: 'i', shift: 'I', normal: '𑚂 (i)', shifted: '𑚃 (ī)' },
+      { key: 'u', shift: 'U', normal: '𑚄 (u)', shifted: '𑚅 (ū)' },
+      { key: 'e', shift: 'E', normal: '𑚆 (e)', shifted: '𑚇 (ai)' },
+      { key: 'o', shift: 'O', normal: '𑚈 (o)', shifted: '𑚉 (au)' },
+    ]
+  },
+  {
+    title: 'Consonants',
+    keys: [
+      { key: 'k', shift: 'K', normal: '𑚊 (ka)', shifted: '𑚸 (kha)' },
+      { key: 'g', shift: 'G', normal: '𑚌 (ga)', shifted: '𑚍 (gha)' },
+      { key: 'c', shift: 'C', normal: '𑚏 (ca)', shifted: '𑚐 (cha)' },
+      { key: 'j', shift: 'J', normal: '𑚑 (ja)', shifted: '𑚒 (jha)' },
+      { key: 't', shift: 'T', normal: '𑚙 (ta)', shifted: '𑚔 (ṭa)' },
+      { key: 'd', shift: 'D', normal: '𑚛 (da)', shifted: '𑚖 (ḍa)' },
+      { key: 'p', shift: 'P', normal: '𑚞 (pa)', shifted: '𑚟 (pha)' },
+      { key: 'b', shift: 'B', normal: '𑚠 (ba)', shifted: '𑚡 (bha)' },
+      { key: 'n', shift: 'N', normal: '𑚝 (na)', shifted: '𑚘 (ṇa)' },
+      { key: 'm', shift: 'M', normal: '𑚢 (ma)', shifted: '𑚫 (ṃ)' },
+      { key: 'y', normal: '𑚣 (ya)' },
+      { key: 'r', normal: '𑚤 (ra)' },
+      { key: 'l', normal: '𑚥 (la)' },
+      { key: 'v/w', normal: '𑚦 (va)' },
+      { key: 's', shift: 'S', normal: '𑚨 (sa)', shifted: '𑚧 (śa)' },
+      { key: 'h', shift: 'H', normal: '𑚩 (ha)', shifted: '𑚬 (ḥ)' },
+      { key: 'x', normal: '𑚋 (ṣa)' },
+      { key: 'q', normal: '𑚎 (ṅa)' },
+    ]
+  },
+  {
+    title: 'Special',
+    keys: [
+      { key: 'z', normal: '𑚶 (virama/halant)' },
+      { key: '.', shift: '>', normal: '। (danda)', shifted: '॥ (double danda)' },
+      { key: '0–9', normal: '𑛀–𑛉 (Tankri digits)' },
+    ]
+  }
+];
+
 export default function TankriKeyboard() {
   const [text, setText] = useState('');
   const [copied, setCopied] = useState(false);
+  const [physicalMode, setPhysicalMode] = useState(true);
+  const [showKeyMap, setShowKeyMap] = useState(false);
+  const [activeKey, setActiveKey] = useState(null); // for visual highlight
   const textareaRef = useRef(null);
+  const highlightTimeoutRef = useRef(null);
 
-  const insertChar = (char) => {
+  const insertChar = useCallback((char) => {
     const textarea = textareaRef.current;
     if (!textarea) return;
 
@@ -83,12 +200,139 @@ export default function TankriKeyboard() {
     const newText = text.substring(0, start) + char + text.substring(end);
     setText(newText);
     
-    // Set cursor position after inserted char
     setTimeout(() => {
       textarea.selectionStart = textarea.selectionEnd = start + char.length;
       textarea.focus();
     }, 0);
-  };
+  }, [text]);
+
+  // Highlight the matching on-screen key briefly
+  const highlightKey = useCallback((tankriChar) => {
+    setActiveKey(tankriChar);
+    if (highlightTimeoutRef.current) clearTimeout(highlightTimeoutRef.current);
+    highlightTimeoutRef.current = setTimeout(() => setActiveKey(null), 200);
+  }, []);
+
+  // Physical keyboard handler
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea || !physicalMode) return;
+
+    const handleKeyDown = (e) => {
+      // Allow standard navigation/control keys
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      if (['Tab', 'Escape', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) return;
+
+      // Backspace — handle explicitly to stay in sync with React state
+      if (e.key === 'Backspace') {
+        e.preventDefault();
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const currentText = textarea.value;
+
+        if (start === end && start > 0) {
+          // Delete the character before cursor (handle multi-codepoint chars)
+          const before = Array.from(currentText.substring(0, start));
+          before.pop();
+          const newText = before.join('') + currentText.substring(end);
+          setText(newText);
+          const newPos = before.join('').length;
+          setTimeout(() => {
+            textarea.selectionStart = textarea.selectionEnd = newPos;
+          }, 0);
+        } else if (start !== end) {
+          // Delete selected text
+          const newText = currentText.substring(0, start) + currentText.substring(end);
+          setText(newText);
+          setTimeout(() => {
+            textarea.selectionStart = textarea.selectionEnd = start;
+          }, 0);
+        }
+        return;
+      }
+
+      // Delete key
+      if (e.key === 'Delete') {
+        e.preventDefault();
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const currentText = textarea.value;
+
+        if (start === end && start < currentText.length) {
+          const after = Array.from(currentText.substring(start));
+          after.shift();
+          const newText = currentText.substring(0, start) + after.join('');
+          setText(newText);
+          setTimeout(() => {
+            textarea.selectionStart = textarea.selectionEnd = start;
+          }, 0);
+        } else if (start !== end) {
+          const newText = currentText.substring(0, start) + currentText.substring(end);
+          setText(newText);
+          setTimeout(() => {
+            textarea.selectionStart = textarea.selectionEnd = start;
+          }, 0);
+        }
+        return;
+      }
+
+      // Enter
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const currentText = textarea.value;
+        const newText = currentText.substring(0, start) + '\n' + currentText.substring(end);
+        setText(newText);
+        setTimeout(() => {
+          textarea.selectionStart = textarea.selectionEnd = start + 1;
+        }, 0);
+        return;
+      }
+
+      // Space
+      if (e.key === ' ') {
+        e.preventDefault();
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const currentText = textarea.value;
+        const newText = currentText.substring(0, start) + ' ' + currentText.substring(end);
+        setText(newText);
+        setTimeout(() => {
+          textarea.selectionStart = textarea.selectionEnd = start + 1;
+        }, 0);
+        return;
+      }
+
+      // Find mapped character
+      const mappedChar = PHYSICAL_KEY_MAP[e.key];
+      if (mappedChar) {
+        e.preventDefault();
+
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const currentText = textarea.value;
+
+        const newText = currentText.substring(0, start) + mappedChar + currentText.substring(end);
+        setText(newText);
+
+        // Highlight on-screen key
+        highlightKey(mappedChar);
+
+        setTimeout(() => {
+          textarea.selectionStart = textarea.selectionEnd = start + mappedChar.length;
+        }, 0);
+      } else {
+        // Prevent unmapped keys from typing (unless handled above)
+        if (e.key.length === 1) {
+          e.preventDefault();
+        }
+      }
+    };
+
+    textarea.addEventListener('keydown', handleKeyDown);
+    return () => textarea.removeEventListener('keydown', handleKeyDown);
+  }, [physicalMode, highlightKey]);
 
   const handleBackspace = () => {
     const textarea = textareaRef.current;
@@ -98,15 +342,8 @@ export default function TankriKeyboard() {
     const end = textarea.selectionEnd;
 
     if (start === end && start > 0) {
-      // Find the start of the previous character (handle proxy pairs / combined unicode properly)
-      // For simplicity in this basic version, we decrement by 1, which works for basic characters.
-      // A robust implementation would use Array.from(text) to handle full unicode correctly, 
-      // but typical React states will handle standard string splicing well enough for test displays.
-      
       const chars = Array.from(text);
-      // It's safer to handle deletion by converting to an array of unicode characters
       if (text.length > 0) {
-        // Simple fallback deletion if cursor tracking gets too tricky
          setText(text.slice(0, -1));
       }
     } else if (start !== end) {
@@ -127,14 +364,35 @@ export default function TankriKeyboard() {
     });
   };
 
+  // Check if a key should be highlighted
+  const isKeyActive = (tankriChar) => activeKey === tankriChar;
+
   return (
     <div className="tankri-keyboard-container">
+      {/* Mode toggle */}
+      <div className="keyboard-mode-bar">
+        <label className="keyboard-mode-toggle">
+          <input
+            type="checkbox"
+            checked={physicalMode}
+            onChange={(e) => setPhysicalMode(e.target.checked)}
+          />
+          <span className="toggle-slider"></span>
+          <span className="toggle-label">Physical Keyboard Mode</span>
+        </label>
+        {physicalMode && (
+          <span className="mode-hint">
+            Type on your keyboard to input Tankri characters
+          </span>
+        )}
+      </div>
+
       <textarea
         ref={textareaRef}
         className="tankri-textarea"
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="Type here using the keyboard below..."
+        placeholder={physicalMode ? "Focus here and type on your keyboard..." : "Type here using the keyboard below..."}
         dir="ltr"
       />
 
@@ -142,8 +400,12 @@ export default function TankriKeyboard() {
         <div className="keyboard-section">
           <div className="keyboard-section-title">Vowels & Others</div>
           <div className="keyboard-grid">
-            {TANKRI_CHARS.vowels.map(k => (
-              <button key={`iv-${k.label}`} className="keyboard-key" onClick={() => insertChar(k.char)}>
+            {TANKRI_CHARS.vowels.map((k, idx) => (
+              <button
+                key={`iv-${k.label}-${idx}`}
+                className={`keyboard-key${isKeyActive(k.char) ? ' key-active' : ''}`}
+                onClick={() => insertChar(k.char)}
+              >
                 <span className="key-char">{k.char}</span>
                 <span className="key-label">{k.label}</span>
               </button>
@@ -154,10 +416,17 @@ export default function TankriKeyboard() {
         <div className="keyboard-section">
           <div className="keyboard-section-title">Consonants</div>
           <div className="keyboard-grid">
-            {TANKRI_CHARS.consonants.map(k => (
-              <button key={`c-${k.label}`} className="keyboard-key" onClick={() => insertChar(k.char)}>
+            {TANKRI_CHARS.consonants.map((k, idx) => (
+              <button
+                key={`c-${k.label}-${idx}`}
+                className={`keyboard-key${isKeyActive(k.char) ? ' key-active' : ''}`}
+                onClick={() => insertChar(k.char)}
+              >
                 <span className="key-char">{k.char}</span>
                 <span className="key-label">{k.label}</span>
+                {REVERSE_KEY_MAP[k.char] && (
+                  <span className="key-shortcut">{REVERSE_KEY_MAP[k.char][0]}</span>
+                )}
               </button>
             ))}
           </div>
@@ -166,8 +435,12 @@ export default function TankriKeyboard() {
         <div className="keyboard-section">
           <div className="keyboard-section-title">South-Indic Consonants</div>
           <div className="keyboard-grid">
-            {TANKRI_CHARS.southIndicConsonants.map(k => (
-              <button key={`sic-${k.label}`} className="keyboard-key" onClick={() => insertChar(k.char)}>
+            {TANKRI_CHARS.southIndicConsonants.map((k, idx) => (
+              <button
+                key={`sic-${k.label}-${idx}`}
+                className={`keyboard-key${isKeyActive(k.char) ? ' key-active' : ''}`}
+                onClick={() => insertChar(k.char)}
+              >
                 <span className="key-char">{k.char}</span>
                 <span className="key-label">{k.label}</span>
               </button>
@@ -178,8 +451,12 @@ export default function TankriKeyboard() {
         <div className="keyboard-section">
           <div className="keyboard-section-title">North-Indic Consonants with Nukta</div>
           <div className="keyboard-grid">
-            {TANKRI_CHARS.northIndicConsonants.map(k => (
-              <button key={`nic-${k.label}`} className="keyboard-key" onClick={() => insertChar(k.char)}>
+            {TANKRI_CHARS.northIndicConsonants.map((k, idx) => (
+              <button
+                key={`nic-${k.label}-${idx}`}
+                className={`keyboard-key${isKeyActive(k.char) ? ' key-active' : ''}`}
+                onClick={() => insertChar(k.char)}
+              >
                 <span className="key-char">{k.char}</span>
                 <span className="key-label">{k.label}</span>
               </button>
@@ -190,8 +467,12 @@ export default function TankriKeyboard() {
         <div className="keyboard-section">
           <div className="keyboard-section-title">Sinhala Pre-nasalized Consonants</div>
           <div className="keyboard-grid">
-            {TANKRI_CHARS.sinhalaConsonants.map(k => (
-              <button key={`spc-${k.label}`} className="keyboard-key" onClick={() => insertChar(k.char)}>
+            {TANKRI_CHARS.sinhalaConsonants.map((k, idx) => (
+              <button
+                key={`spc-${k.label}-${idx}`}
+                className={`keyboard-key${isKeyActive(k.char) ? ' key-active' : ''}`}
+                onClick={() => insertChar(k.char)}
+              >
                 <span className="key-char" style={{ fontSize: '1.2rem' }}>{k.char}</span>
                 <span className="key-label">{k.label}</span>
               </button>
@@ -202,8 +483,12 @@ export default function TankriKeyboard() {
         <div className="keyboard-section">
           <div className="keyboard-section-title">Combining Signs (Matras & Marks)</div>
           <div className="keyboard-grid dependent-vowels">
-            {TANKRI_CHARS.combiningSigns.map(k => (
-              <button key={`cs-${k.label}`} className="keyboard-key" onClick={() => insertChar(k.char)}>
+            {TANKRI_CHARS.combiningSigns.map((k, idx) => (
+              <button
+                key={`cs-${k.label}-${idx}`}
+                className={`keyboard-key${isKeyActive(k.char) ? ' key-active' : ''}`}
+                onClick={() => insertChar(k.char)}
+              >
                 <span className="key-dependent">◌{k.char}</span>
                 <span className="key-label">{k.label}</span>
               </button>
@@ -214,8 +499,12 @@ export default function TankriKeyboard() {
         <div className="keyboard-section">
           <div className="keyboard-section-title">Numerals & Others</div>
           <div className="keyboard-grid">
-            {TANKRI_CHARS.digits.concat(TANKRI_CHARS.others).map(k => (
-              <button key={`num-oth-${k.label}`} className="keyboard-key" onClick={() => insertChar(k.char)}>
+            {TANKRI_CHARS.digits.concat(TANKRI_CHARS.others).map((k, idx) => (
+              <button
+                key={`num-oth-${k.label}-${idx}`}
+                className={`keyboard-key${isKeyActive(k.char) ? ' key-active' : ''}`}
+                onClick={() => insertChar(k.char)}
+              >
                 <span className="key-char">{k.char}</span>
                 <span className="key-label">{k.label}</span>
               </button>
@@ -242,6 +531,46 @@ export default function TankriKeyboard() {
           </button>
         </div>
       </div>
+
+      {/* Key Map Reference */}
+      <div className="keymap-reference">
+        <button
+          className="keymap-toggle"
+          onClick={() => setShowKeyMap(!showKeyMap)}
+        >
+          {showKeyMap ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+          <span>Keyboard Shortcuts Reference</span>
+        </button>
+        {showKeyMap && (
+          <div className="keymap-content">
+            {KEY_MAP_GROUPS.map((group) => (
+              <div key={group.title} className="keymap-group">
+                <h4>{group.title}</h4>
+                <div className="keymap-table">
+                  {group.keys.map((item, idx) => (
+                    <div key={idx} className="keymap-row">
+                      <span className="keymap-key">{item.key}</span>
+                      <span className="keymap-arrow">→</span>
+                      <span className="keymap-value">{item.normal}</span>
+                      {item.shifted && (
+                        <>
+                          <span className="keymap-divider">|</span>
+                          <span className="keymap-key">⇧{item.shift}</span>
+                          <span className="keymap-arrow">→</span>
+                          <span className="keymap-value">{item.shifted}</span>
+                        </>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
+
+// Export for use by the game component
+export { TANKRI_CHARS };
