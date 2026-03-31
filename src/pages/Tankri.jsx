@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { BookA, History, Keyboard, ShieldAlert, Gamepad2, ChevronDown, ChevronUp } from 'lucide-react';
 import TankriKeyboard from '../components/TankriKeyboard';
 import TankriGame from '../components/TankriGame';
+import SEOHead from '../components/SEOHead';
 import './Tankri.css';
 
 export default function Tankri() {
@@ -10,6 +11,11 @@ export default function Tankri() {
 
   return (
     <div className="tankri-page">
+      <SEOHead
+        title="Tankri Script — Type & Learn"
+        description="Explore the ancient Tankri (Takri) script from Mandi. Use our interactive keyboard to type in Tankri, and learn through fun games and quizzes."
+        path="/tankri"
+      />
       <div className="container">
         <div className="tankri-hero fade-in-up">
           <div className="tankri-badge">

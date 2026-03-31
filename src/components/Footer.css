@@ -24,8 +24,11 @@
     margin-bottom: 12px;
 }
 
-.footer-logo-accent {
-    color: var(--accent-gold);
+.footer-logo-icon {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
 }
 
 .footer-desc {

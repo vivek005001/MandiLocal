@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PenLine, Search } from 'lucide-react';
 import BlogCard from '../components/BlogCard';
+import SEOHead from '../components/SEOHead';
 import { SEED_BLOGS } from '../data/seedData';
 import { filterText, containsProfanity } from '../components/CussFilter';
 import './Blogs.css';
@@ -101,6 +102,11 @@ export default function Blogs() {
 
   return (
     <div className="blogs-page">
+      <SEOHead
+        title="Blog & News"
+        description="Read stories, cultural insights, and news from Mandi, Himachal Pradesh. Share your own experiences and join the community conversation."
+        path="/blogs"
+      />
       <div className="container">
         <div className="blogs-header">
           <div>

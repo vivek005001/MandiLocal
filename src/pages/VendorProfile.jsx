@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { Phone, MessageCircle, MapPin, ArrowLeft, Tag, Calendar } from 'lucide-react';
+import SEOHead from '../components/SEOHead';
 import { SEED_VENDORS } from '../data/seedData';
 import './VendorProfile.css';
 
@@ -26,6 +27,11 @@ export default function VendorProfile() {
 
   return (
     <div className="profile-page">
+      <SEOHead
+        title={vendor.shopName}
+        description={`${vendor.shopName} by ${vendor.name} — ${vendor.description.substring(0, 140)}`}
+        path={`/vendor/${vendor.id}`}
+      />
       <div className="container">
         <Link to="/catalog" className="profile-back">
           <ArrowLeft size={16} /> Back to Catalog

@@ -1,0 +1,7 @@
+# MeraHimachal Robots.txt
+# https://www.merahimachal.com
+
+User-agent: *
+Allow: /
+
+Sitemap: https://www.merahimachal.com/sitemap.xml

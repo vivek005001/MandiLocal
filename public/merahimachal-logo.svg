@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="mountainGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3a5f42"/>
+      <stop offset="100%" style="stop-color:#4a7c59"/>
+    </linearGradient>
+    <linearGradient id="peakGrad" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" style="stop-color:#6b8f71"/>
+      <stop offset="60%" style="stop-color:#3a5f42"/>
+    </linearGradient>
+    <linearGradient id="sunGrad" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" style="stop-color:#d4a843"/>
+      <stop offset="100%" style="stop-color:#8b6914"/>
+    </linearGradient>
+  </defs>
+  <!-- Circle background -->
+  <circle cx="256" cy="256" r="240" fill="url(#mountainGrad)" opacity="0.1"/>
+  <circle cx="256" cy="256" r="240" stroke="url(#mountainGrad)" stroke-width="8" fill="none"/>
+  <!-- Sun/semicircle behind mountains -->
+  <circle cx="256" cy="260" r="80" fill="url(#sunGrad)" opacity="0.3"/>
+  <!-- Mountain peaks -->
+  <!-- Left peak -->
+  <polygon points="100,360 200,180 300,360" fill="url(#peakGrad)" opacity="0.7"/>
+  <!-- Center peak (tallest) -->
+  <polygon points="170,360 280,140 390,360" fill="url(#peakGrad)"/>
+  <!-- Right peak -->
+  <polygon points="260,360 350,200 440,360" fill="url(#peakGrad)" opacity="0.8"/>
+  <!-- Snow caps -->
+  <polygon points="250,155 280,140 310,155 295,165 265,165" fill="white" opacity="0.9"/>
+  <polygon points="175,195 200,180 225,195 215,202 185,202" fill="white" opacity="0.7"/>
+  <polygon points="325,215 350,200 375,215 365,222 335,222" fill="white" opacity="0.7"/>
+  <!-- Base ground -->
+  <rect x="80" y="350" width="380" height="24" rx="12" fill="url(#mountainGrad)" opacity="0.2"/>
+  <!-- Text: MH -->
+  <text x="256" y="445" text-anchor="middle" font-family="'Outfit', 'Segoe UI', sans-serif" font-size="70" font-weight="800" fill="#3a5f42" letter-spacing="6">MH</text>
+</svg>

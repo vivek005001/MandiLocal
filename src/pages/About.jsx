@@ -1,10 +1,16 @@
 import { Link } from 'react-router-dom';
 import { Mountain, MapPin, Landmark, Utensils, Palette, ArrowRight } from 'lucide-react';
+import SEOHead from '../components/SEOHead';
 import './About.css';
 
 export default function About() {
   return (
     <div className="about-page">
+      <SEOHead
+        title="About Mandi"
+        description="Learn about Mandi, the Choti Kashi of Himachal Pradesh. Discover its ancient temples, vibrant culture, traditional cuisine, and local craftsmanship."
+        path="/about"
+      />
       <div className="container">
         <div className="about-hero">
           <div className="about-badge">

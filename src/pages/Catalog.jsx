@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Search, Filter } from 'lucide-react';
 import VendorCard from '../components/VendorCard';
+import SEOHead from '../components/SEOHead';
 import { SEED_VENDORS, CATEGORIES } from '../data/seedData';
 import './Catalog.css';
 
@@ -54,6 +55,11 @@ export default function Catalog() {
 
   return (
     <div className="catalog-page">
+      <SEOHead
+        title="Vendor Catalog"
+        description="Browse authentic local vendors from Mandi, Himachal Pradesh. Discover handcrafted goods, traditional food, and unique products from local artisans."
+        path="/catalog"
+      />
       <div className="container">
         <div className="catalog-header">
           <h1>Vendor Catalog</h1>

@@ -25,6 +25,13 @@
     height: 100%;
 }
 
+/* ===== Brand (Logo + District) ===== */
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
 .navbar-logo {
     display: flex;
     align-items: center;
@@ -41,14 +48,133 @@
     color: var(--green-700);
 }
 
+.navbar-logo-icon {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
 .navbar-logo-text {
     letter-spacing: -0.02em;
 }
 
-.navbar-logo-accent {
-    color: var(--brown-600);
+/* ===== District Selector ===== */
+.district-selector {
+    position: relative;
 }
 
+.district-trigger {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    background: var(--green-50);
+    border: 1px solid var(--green-200);
+    border-radius: 100px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--green-700);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+}
+
+.district-trigger:hover {
+    background: var(--green-100);
+    border-color: var(--green-400);
+}
+
+.district-chevron {
+    transition: transform var(--transition-fast);
+}
+
+.district-chevron.chevron-open {
+    transform: rotate(180deg);
+}
+
+.district-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 200px;
+    background: white;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    z-index: 200;
+    overflow: hidden;
+    animation: fadeInUp 0.2s ease forwards;
+}
+
+.district-menu-header {
+    padding: 10px 14px 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.district-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-align: left;
+}
+
+.district-option:hover {
+    background: var(--green-50);
+}
+
+.district-option.district-active {
+    background: var(--green-50);
+    color: var(--green-800);
+    font-weight: 600;
+}
+
+.district-option.district-disabled {
+    color: var(--text-muted);
+}
+
+.district-option.district-disabled:hover {
+    background: var(--off-white);
+}
+
+.coming-soon-badge {
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 2px 7px;
+    background: var(--brown-100);
+    color: var(--brown-600);
+    border-radius: 100px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.district-check {
+    color: var(--green-600);
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+/* ===== District Toast ===== */
+.district-toast {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ===== Nav Links ===== */
 .navbar-links {
     display: flex;
     align-items: center;
@@ -89,6 +215,7 @@
     padding: 4px;
 }
 
+/* ===== Mobile ===== */
 @media (max-width: 768px) {
     .navbar-toggle {
         display: block;
@@ -122,5 +249,34 @@
         margin-top: 8px;
         width: 100%;
         text-align: center;
+    }
+
+    .navbar-logo-text {
+        font-size: 1.1rem;
+    }
+
+    .navbar-logo-icon {
+        width: 28px;
+        height: 28px;
+    }
+
+    .district-menu {
+        left: -10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar-brand {
+        gap: 8px;
+    }
+
+    .navbar-logo {
+        gap: 6px;
+        font-size: 1rem;
+    }
+
+    .district-trigger {
+        padding: 4px 8px;
+        font-size: 0.7rem;
     }
 }

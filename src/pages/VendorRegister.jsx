@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle, Upload } from 'lucide-react';
+import SEOHead from '../components/SEOHead';
 import { CATEGORIES } from '../data/seedData';
 import './VendorRegister.css';
 
@@ -77,6 +78,11 @@ export default function VendorRegister() {
 
   return (
     <div className="register-page">
+      <SEOHead
+        title="Become a Vendor"
+        description="Register as a local vendor on Mera Himachal. List your handcrafted products for free and connect directly with customers who value authentic goods."
+        path="/register"
+      />
       <div className="container">
         <div className="register-wrapper">
           <div className="register-header">

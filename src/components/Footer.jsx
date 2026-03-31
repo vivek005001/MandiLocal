@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Mountain, Heart } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import './Footer.css';
 
 export default function Footer() {
@@ -9,11 +9,15 @@ export default function Footer() {
         <div className="footer-grid">
           <div className="footer-brand">
             <Link to="/" className="footer-logo">
-              <Mountain size={22} />
-              <span>Mera Himachal <span className="footer-logo-accent">- Mandi</span></span>
+              <img
+                src="/merahimachal-logo.svg"
+                alt="MeraHimachal"
+                className="footer-logo-icon"
+              />
+              <span>Mera Himachal</span>
             </Link>
             <p className="footer-desc">
-              Connecting you to the authentic culture, crafts, and flavors of Mandi, Himachal Pradesh.
+              Connecting you to the authentic culture, crafts, and flavors of Himachal Pradesh.
             </p>
           </div>
 
@@ -21,7 +25,7 @@ export default function Footer() {
             <h4 className="footer-heading">Explore</h4>
             <Link to="/catalog" className="footer-link">Vendor Catalog</Link>
             <Link to="/blogs" className="footer-link">Blog & News</Link>
-            <Link to="/about" className="footer-link">About Mandi</Link>
+            <Link to="/about" className="footer-link">About</Link>
           </div>
 
           <div className="footer-col">
@@ -33,7 +37,7 @@ export default function Footer() {
 
         <div className="footer-bottom">
           <p>
-            Made with <Heart size={14} className="footer-heart" /> in Mandi, Himachal Pradesh
+            Made with <Heart size={14} className="footer-heart" /> in Himachal Pradesh
           </p>
           <p className="footer-copy">© 2026 Mera Himachal. For the community, by the community.</p>
         </div>

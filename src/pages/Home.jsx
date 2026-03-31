@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, ShoppingBag, Newspaper, Users, Mountain } from 'lucide-react';
 import VendorCard from '../components/VendorCard';
 import BlogCard from '../components/BlogCard';
+import SEOHead from '../components/SEOHead';
 import { SEED_VENDORS, SEED_BLOGS } from '../data/seedData';
 import './Home.css';
 
@@ -22,7 +23,11 @@ export default function Home() {
 
   return (
     <div className="home">
-      {/* Hero */}
+      <SEOHead
+        title="Discover the Heart of Mandi"
+        description="Your gateway to authentic local culture, handcrafted goods, and stories from Mandi, Himachal Pradesh. Support local artisans directly."
+        path="/"
+      />
       <section className="hero">
         <div className="container hero-content">
           <div className="hero-badge fade-in-up">

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, User, MessageSquare, Send, AlertTriangle, Trash2 } from 'lucide-react';
+import SEOHead from '../components/SEOHead';
 import { SEED_BLOGS } from '../data/seedData';
 import { filterText, containsProfanity } from '../components/CussFilter';
 import './BlogPost.css';
@@ -123,6 +124,12 @@ export default function BlogPost() {
 
   return (
     <div className="blogpost-page">
+      <SEOHead
+        title={blog.title}
+        description={blog.excerpt || blog.content.substring(0, 160)}
+        path={`/blog/${blog.id}`}
+        type="article"
+      />
       <div className="container">
         <Link to="/blogs" className="blogpost-back">
           <ArrowLeft size={16} /> Back to Blog
