@@ -5,6 +5,14 @@ import './About.css';
 
 const MILESTONES = [
   {
+    tag: 'Ground Zero',
+    title: 'Surveying Inside the Campus',
+    desc: 'Starting off our journey by surveying students, faculty, and local staff inside the campus to understand the gap between local artisans and the community.',
+    img: '/images/milestones/campus_survey.jpg',
+    alt: 'Surveying with the team inside the campus',
+    color: '#3b5998',
+  },
+  {
     tag: 'Research Partnership',
     title: 'Tankri Language Research',
     desc: 'Collaborated with a dedicated researcher to document and revive the ancient Tankri script — a rare writing system once used across the Mandi-Kullu belt.',
