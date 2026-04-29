@@ -4,6 +4,17 @@ import SEOHead from '../components/SEOHead';
 import { SEED_VENDORS } from '../data/seedData';
 import './VendorProfile.css';
 
+const CATEGORY_EMOJIS = {
+  'Handicrafts': '🎨',
+  'Food & Pickles': '🫙',
+  'Textiles & Shawls': '🧣',
+  'Herbs & Spices': '🌿',
+  'Wooden Crafts': '🪵',
+  'Jewelry': '💎',
+  'Art & Paintings': '🖼️',
+  'Other': '📦',
+};
+
 export default function VendorProfile() {
   const { id } = useParams();
 
@@ -24,6 +35,22 @@ export default function VendorProfile() {
   }
 
   const whatsappLink = `https://wa.me/${vendor.whatsapp}?text=${encodeURIComponent(`Hi ${vendor.name}, I found your shop "${vendor.shopName}" on Mera Himachal and I'm interested in your products!`)}`;
+  const categoryEmoji = CATEGORY_EMOJIS[vendor.category] || '📦';
+
+  const renderDescription = (text) => {
+    if (!text) return null;
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.split(urlRegex).map((part, i) => {
+      if (part.match(urlRegex)) {
+        return (
+          <a key={i} href={part} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--green-600)', textDecoration: 'underline' }}>
+            {part}
+          </a>
+        );
+      }
+      return part;
+    });
+  };
 
   return (
     <div className="profile-page">
@@ -40,19 +67,27 @@ export default function VendorProfile() {
         <div className="profile-layout">
           <div className="profile-main">
             <div className="profile-header-card">
-              <span className="badge">{vendor.category}</span>
-              <h1 className="profile-shop">{vendor.shopName}</h1>
-              <p className="profile-owner">
-                <MapPin size={15} />
-                {vendor.name} · Mandi, Himachal Pradesh
-              </p>
-              {vendor.createdAt && (
-                <p className="profile-date">
-                  <Calendar size={14} />
-                  Vendor since {new Date(vendor.createdAt).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })}
-                </p>
+              {vendor.image && (
+                <div className="profile-shop-banner">
+                  <img src={vendor.image} alt={vendor.shopName} className="profile-shop-banner-img" />
+                  <div className="profile-shop-banner-overlay" />
+                </div>
               )}
-              <p className="profile-desc">{vendor.description}</p>
+              <div className="profile-header-body">
+                <span className="badge">{categoryEmoji} {vendor.category}</span>
+                <h1 className="profile-shop">{vendor.shopName}</h1>
+                <p className="profile-owner">
+                  <MapPin size={15} />
+                  {vendor.name} · Mandi, Himachal Pradesh
+                </p>
+                {vendor.createdAt && (
+                  <p className="profile-date">
+                    <Calendar size={14} />
+                    Vendor since {new Date(vendor.createdAt).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })}
+                  </p>
+                )}
+                <p className="profile-desc">{renderDescription(vendor.description)}</p>
+              </div>
             </div>
 
             {vendor.products && vendor.products.length > 0 && (
@@ -61,6 +96,13 @@ export default function VendorProfile() {
                 <div className="products-list">
                   {vendor.products.map((product, i) => (
                     <div key={i} className="product-item">
+                      {product.image && (
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="product-item-thumb"
+                        />
+                      )}
                       <div className="product-item-info">
                         <Tag size={15} className="product-item-icon" />
                         <div>

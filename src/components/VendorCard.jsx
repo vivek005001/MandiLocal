@@ -30,9 +30,21 @@ export default function VendorCard({ vendor, onDelete }) {
 
   return (
     <Link to={`/vendor/${vendor.id}`} className="vendor-card card">
-      <div className="vendor-card-header" style={{ background: `linear-gradient(135deg, ${color}18, ${color}08)` }}>
-        <span className="vendor-card-emoji">{emoji}</span>
-        <span className="badge" style={{ background: `${color}18`, color }}>{vendor.category}</span>
+      <div className="vendor-card-header">
+        {vendor.image ? (
+          <img
+            src={vendor.image}
+            alt={`${vendor.shopName} shop`}
+            className="vendor-card-photo"
+          />
+        ) : (
+          <div className="vendor-card-photo-fallback" style={{ background: `linear-gradient(135deg, ${color}28, ${color}10)` }}>
+            <span className="vendor-card-emoji">{emoji}</span>
+          </div>
+        )}
+        <span className="vendor-card-badge badge" style={{ background: `${color}ee`, color: '#fff' }}>
+          {emoji} {vendor.category}
+        </span>
       </div>
       <div className="card-body">
         <h3 className="vendor-card-shop">{vendor.shopName}</h3>
